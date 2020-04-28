@@ -1,0 +1,85 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+import java.util.Scanner;
+
+public class Solution {
+
+    static void LCSLength(int[] x, int[] y, int n, int m){
+        
+        int[][] b = new int[n+1][m+1];
+        int[][] c = new int[n+1][m+1];
+        
+        for(int i = 1; i <= n; i++){
+            b[i][0] = 0;
+        }
+        
+        for(int j = 0; j <= m; j++){
+            b[0][j] = 0;
+        }
+        
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= m; j++){
+                if(x[i-1] == y[j-1]){
+                    c[i][j] = c[i-1][j-1] + 1;
+                    b[i][j] = 1;
+                }
+                else if(c[i-1][j] >= c[i][j-1]){
+                    c[i][j] = c[i-1][j];
+                    b[i][j] = 2;
+                }
+                else{
+                    c[i][j] = c[i][j-1];
+                    b[i][j] = 3;
+                }
+            }
+        }
+        printLCS(b, x, x.length, y.length);
+    }
+    
+    public static void printLCS(int[][]b, int[] x, int i, int j){
+        if(i == 0 || j == 0){
+            return;
+        }
+        if(b[i][j] == 1){
+            printLCS(b, x, i-1, j-1);
+            System.out.print(x[i-1] + " ");
+        }
+        else if(b[i][j] == 2){
+            printLCS(b, x, i-1, j);
+        }
+        else{
+            printLCS(b, x, i, j-1);
+        }
+    }
+    public static void main(String[] args){
+        Scanner input = new Scanner(System.in);
+        int m, n;
+        String x,y,nAndm;
+
+        nAndm = input.nextLine();
+        
+        String[] nAndmStr = nAndm.split(" ");
+        
+        m = Integer.parseInt(nAndmStr[1]);
+        n = Integer.parseInt(nAndmStr[0]);
+
+        y = input.nextLine();
+        x = input.nextLine();
+        
+        String[] xStr = x.split(" ");
+        int[] xNum = new int[xStr.length];
+        for(int i = 0; i < xStr.length; i++){
+            xNum[i] = Integer.parseInt(xStr[i]);
+        }
+        
+        String[] yStr = y.split(" ");
+        int[] yNum = new int[yStr.length];
+        for(int i = 0; i < yStr.length; i++){
+            yNum[i] = Integer.parseInt(yStr[i]);
+        }
+        LCSLength(xNum,yNum,m,n);
+    }
+}
